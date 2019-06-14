@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
-from main import main
+from main import VideoToTxt
 
 FILE_PATH = None
 
@@ -16,8 +16,7 @@ def run():
     global FILE_PATH
     if not FILE_PATH:
         return messagebox.showinfo("警告", "请先输入mp4文件!")
-    # TODO 完成主函数
-    main(FILE_PATH)
+    VideoToTxt(FILE_PATH, flag).main()
 
 
 root = tk.Tk()
@@ -28,6 +27,10 @@ frame.pack()
 
 button = tk.Button(frame, text="点击输入mp4文件",command = find_file_path)
 button.pack()
+
+flag = tk.IntVar()
+check = tk.Checkbutton(frame, text="删除缓存文件", variable=flag, onvalue=1, offvalue=0)
+check.pack()
 
 start = tk.Button(frame, text="start",command = run)
 start.pack()
