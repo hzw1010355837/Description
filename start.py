@@ -8,16 +8,20 @@ FILE_PATH = None
 def find_file_path():
     global FILE_PATH
     FILE_PATH = filedialog.askopenfilename()
-    if not FILE_PATH.endswith(".mp4"):
+    if FILE_PATH.split('.')[-1] not in ["mp4", "MP4", "avi", "AVI"]:
         FILE_PATH = None
-        return messagebox.showinfo("提示", "目前只支持mp4格式哦!")
+        return messagebox.showinfo("提示", "目前只支持mp4和avi格式哦!")
 
 def run():
     global FILE_PATH
     if not FILE_PATH:
-        return messagebox.showinfo("警告", "请先输入mp4文件!")
-    VideoToTxt(FILE_PATH, flag).main()
-
+        return messagebox.showinfo("警告", "请先输入文件!")
+    mp3_flag = VideoToTxt(FILE_PATH, flag).main()
+    if mp3_flag:
+        messagebox.showinfo("提示", "Done!")
+    else:
+        messagebox.showerror("错误", "未安装ffmpeg(视频没有声音)!如未将缓存文件删除,可在缓存%s文件中看到初期效果" % (FILE_PATH.split(".")+"avi"))
+    root.destroy()
 
 root = tk.Tk()
 root.title("nani")

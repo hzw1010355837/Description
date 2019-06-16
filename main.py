@@ -29,6 +29,7 @@ class VideoToTxt:
             frame = False
         while r:
             # LOG.debug("--->生成第" + str(c) + "张图片")
+            # TODO 耗时长的可以用多线程解决程序无响应问题
             cv2.imwrite(str(c) + '.jpg', frame)
             """ 同时转换为ascii图 """
             self.txt2image(str(c) + '.jpg')
@@ -104,6 +105,7 @@ class VideoToTxt:
         self.cache_dir += "\\"
         im = Image.open(self.cache_dir + images[0])
         outfile_name = os.path.join(self.cache_dir, self.file_name.split(".")[0])
+        # TODO 耗时长的可以用多线程解决程序无响应问题
         vw = cv2.VideoWriter(outfile_name + '.avi', fourcc, fps, im.size)
 
         os.chdir(self.cache_dir)
@@ -119,7 +121,9 @@ class VideoToTxt:
     def video2mp3(self):
         # LOG.info("开始获取音频文件!")
         outfile_name = os.path.join(self.cache_dir, self.file_name.split(".")[0]) + '.mp3'
-        subprocess.call('ffmpeg -i ' + self.file_path + ' -f mp3 ' + outfile_name, shell=True)
+        result = subprocess.call('ffmpeg -i ' + self.file_path + ' -f mp3 ' + outfile_name, shell=True)
+        if "不是内部或外部命令" in result:
+            raise Exception("ffmpeg未安装!")
         # LOG.info('获取完毕!')
     
     # 合成音频和视频文件
@@ -152,15 +156,19 @@ class VideoToTxt:
         fps = vc.get(cv2.CAP_PROP_FPS)
         vc.release()
         self.jpg2video(fps)
+        mp3_flag = True
         try:
             self.video2mp3()
             temp_path = os.path.join(self.cache_dir, self.file_name.split(".")[0])
             self.video_add_mp3(temp_path + '.avi', temp_path + '.mp3')
         except Exception as e:
-            print('获取音频文件失败,请先安装ffmpeg')
-            print('DOWNLOAD_ADDRESS: https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-20190518-c61d16c-win64-static.zip')
-        if not self.flag:
-            self.remove_dir()
+            mp3_flag = False
+            # print('获取音频文件失败,请先安装ffmpeg')
+            # print('DOWNLOAD_ADDRESS: https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-20190518-c61d16c-win64-static.zip')
+        finally:
+            if not self.flag:
+                self.remove_dir()
+            return mp3_flag
 
 if __name__ == '__main__':
     VideoToTxt(r"C:\Users\hzw\Desktop\output\KO_12_动漫东东资源团.avi").main()
