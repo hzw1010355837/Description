@@ -29,7 +29,10 @@ class VideoToTxt:
             frame = False
         while r:
             # LOG.debug("--->生成第" + str(c) + "张图片")
-            # TODO 耗时长的可以用多线程解决程序无响应问题
+            # TODO 耗时长的可以用多线程解决程序无响应问题-->无法使用多线程?
+            """
+            视频每一帧图片是连续的
+            """
             cv2.imwrite(str(c) + '.jpg', frame)
             """ 同时转换为ascii图 """
             self.txt2image(str(c) + '.jpg')
@@ -166,6 +169,7 @@ class VideoToTxt:
             # print('获取音频文件失败,请先安装ffmpeg')
             # print('DOWNLOAD_ADDRESS: https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-20190518-c61d16c-win64-static.zip')
         finally:
+            # TODO为何没有删除缓存文件夹
             if not self.flag:
                 self.remove_dir()
             return mp3_flag

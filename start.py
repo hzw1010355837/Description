@@ -20,7 +20,7 @@ def run():
     if mp3_flag:
         messagebox.showinfo("提示", "Done!")
     else:
-        messagebox.showerror("错误", "未安装ffmpeg(视频没有声音)!如未将缓存文件删除,可在缓存%s文件中看到初期效果" % (FILE_PATH.split(".")+"avi"))
+        messagebox.showerror("错误", "未安装ffmpeg(视频没有声音)!如未将缓存文件删除,可在缓存%s文件中看到初期效果" % (FILE_PATH.split(".")[1]+".avi"))
     root.destroy()
 
 root = tk.Tk()
