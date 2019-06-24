@@ -5,7 +5,7 @@ import cv2
 from PIL import Image, ImageDraw, ImageFont
 
 class VideoToTxt:
-    def __init__(self, file_path, flag=0):
+    def __init__(self, file_path, flag=1):
         self.file_path = file_path
         self.cache_dir = os.path.join(os.path.split(file_path)[0], "Cache")
         self.file_name = os.path.split(file_path)[1]
@@ -30,6 +30,7 @@ class VideoToTxt:
         while r:
             # LOG.debug("--->生成第" + str(c) + "张图片")
             # TODO 耗时长的可以用多线程解决程序无响应问题-->无法使用多线程?
+            # 使用yield
             """
             视频每一帧图片是连续的
             """
@@ -169,8 +170,7 @@ class VideoToTxt:
             # print('获取音频文件失败,请先安装ffmpeg')
             # print('DOWNLOAD_ADDRESS: https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-20190518-c61d16c-win64-static.zip')
         finally:
-            # TODO为何没有删除缓存文件夹
-            if not self.flag:
+            if self.flag:
                 self.remove_dir()
             return mp3_flag
 
